@@ -1,0 +1,43 @@
+Fonction print_karnaugh_map(inputs, outputs)
+    num_vars ← longueur(inputs)
+    num_outputs ← longueur(outputs[0])
+    Afficher "Karnaugh Map:"
+    header ← rejoindre(inputs + outputs, " | ")
+    Afficher header
+    Séparateur ← répéter("-", longueur(header))
+    Afficher Séparateur
+    Pour i allant de 0 à 2^num_vars exclu faire
+        row_inputs ← formatter(i, '0{}b'.format(num_vars))
+        row_outputs ← outputs[i]
+        row ← rejoindre(row_inputs + row_outputs, " | ")
+        Afficher row
+
+Fonction karnaugh_minimize(inputs, outputs)
+    num_vars ← longueur(inputs)
+    num_outputs ← longueur(outputs[0])
+    karnaugh_map ← {}
+    Pour i allant de 0 à 2^num_vars exclu faire
+        row_inputs ← formatter(i, '0{}b'.format(num_vars))
+        karnaugh_map[row_inputs] ← outputs[i]
+    implicants ← liste_vide
+    Pour chaque row_inputs, row_outputs dans karnaugh_map faire
+        Si '1' est dans row_outputs alors
+            Ajouter row_inputs à implicants
+    implicants_simplifiés ← liste_vide
+    Pour chaque implicant1 dans implicants faire
+        Pour chaque implicant2 dans implicants faire
+            diff ← somme de (a ≠ b) pour chaque a, b dans zip(implicant1, implicant2)
+            Si diff = 1 alors
+                commun ← concaténer(a si a = b sinon '-' pour chaque a, b dans zip(implicant1, implicant2))
+                Si commun n'est pas dans implicants_simplifiés alors
+                    Ajouter commun à implicants_simplifiés
+    Retourner implicants_simplifiés
+
+# Exemple d'utilisation
+inputs ← ['A', 'B']
+outputs ← ['00', '01', '11', '10']
+
+print_karnaugh_map(inputs, outputs)
+implicants_simplifiés ← karnaugh_minimize(inputs, outputs)
+Afficher "\nImplicants simplifiés:"
+Afficher implicants_simplifiés
